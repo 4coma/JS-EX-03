@@ -1,50 +1,70 @@
+// NOTE METHODO : 
+// CERTAINS EXO PLUS DIFFICILES ONT ETE REPRIS DE CHEZ OSHI; LES COMMENTER 
+// COMPARER LES AUTRES AVEC OSHI
+// DEBRIEF APPRENTISSAGES
+
+
+// VARIABLE GENERALE
+// cette variable permet de récupérer le tableau (je pense automatiquement généré par le DOM) nommé forms et évite la syntaxe plus lourde où on doit à chaque fois rappeler document.forms[x]
 const exo=document.forms;
 
-exo[0].ch1.addEventListener('focus', () => {        
-  exo[0].ch1.value="";
+
+// CHAMP QUI SE VIDE LORSQU'ON RENTRE DEDANS
+
+document.forms[0].ch1.addEventListener('focus', () => {        
+    document.forms[0].ch1.value="";
 })
 
-exo[1].ch1.addEventListener('focus', () => {
-  exo[1].ch1.value="";
+// CHAMP QUI SE VIDE QUAND RENTRE DEDANS ET REMET VAL PAR DEFAUT QUAND ON LE QUITTE
+
+let form1Value = document.forms[1].ch1.value;
+document.forms[1].ch1.addEventListener('focus', () => {
+    document.forms[1].ch1.value="";
+})
+document.forms[1].ch1.addEventListener('blur', () => {
+	document.forms[1].ch1.value = form1Value;
 })
 
-exo[1].ch1.addEventListener('blur', () => {
-  if(exo[1].ch1.value === "") {
-    exo[1].ch1.value=exo[1].ch1.defaultValue;
-  }
+//CHAMP DONT LA TAILLE AUGMENTE 
+
+document.forms[2].ch1.addEventListener('focus', () => {
+	document.forms[2].ch1.addEventListener('keydown', () => {
+		document.forms[2].ch1.size = 20000;
+	})
 })
 
-exo[2].ch1.addEventListener('keydown', () => {
-  exo[2].ch1.size++;
+// CHAMP QUI AFFICHE LES CARACTERES QUAND CASE COCHEE
+
+document.forms[3].cb1.addEventListener('click', () => {
+	var x = document.forms[3].ch1;
+	if (x.type === "password"){x.type = "text";}
+	else{x.type = "password";}
 })
 
-exo[3].cb1.addEventListener('click', () => {
-  if(exo[3].cb1.checked) {
-    exo[3].ch1.type="text";  
-  } else {
-    exo[3].ch1.type="password";
-  }
+// CHAMP QUI AFFICHE CARACT QUAND SOURIS MAINTENUE ET LES MASQUE SINON
+
+document.forms[4].ch1.addEventListener('mousedown', () => {
+	document.forms[4].ch1.type = "text";
 })
 
-document.querySelector(".enfonce").addEventListener('mousedown', () => {
-  exo[4].ch1.type="text";
+document.forms[4].ch1.addEventListener('mouseup', () => {
+	document.forms[4].ch1.type="password"});
+
+// CHAMP QUI JETTE LE FOCUS QUAND ON ESSAYE DE LUI DONNER
+
+document.forms[5].ch1.addEventListener('focus', () => {
+	document.forms[5].ch1.blur();
 })
 
-document.querySelector(".enfonce").addEventListener('mouseup', () => {
-  exo[4].ch1.type = "password";
-})
-
-exo[5].ch1.addEventListener('focus', () => {
-  exo[5].ch1.blur();
-})
-
-exo[6].cb1.addEventListener('click', () => {
+// CHAMP QUI JETTE FOCUS ET VIDE LA CASE SI CHECKBOX COCHÉE
+// OSHI
+exo[6].cb1.addEventListener('click', () => { //la subtilité de l'exo tient en ce qu'il faut se projeter dans l'état qui précède le click car c'est lui qui va déterminer le contenu de la condition. 
   if(exo[6].cb1.checked) {
     exo[6].ch1.focus();
-    exo[6].ch1.value = 0;
+    exo[6].ch1.value = "";
   } else {
     exo[6].ch1.blur();
-    exo[6].ch1.value = null;
+    exo[6].ch1.value = 0; // remise à zero
   }
 })
 
@@ -54,33 +74,50 @@ exo[6].ch1.addEventListener('focus', () => {
   }
 })
 
-exo[7].b1.addEventListener('click', () => {
-  for(let i=1; i <= 2; i++) {
-    let value = Number(exo[7].ch1.value);
-    const checkedelement = document.getElementById("rb1_"+i);
-    if(checkedelement.checked) {
-      exo[7].ch1.value = value + Number(checkedelement.value); 
-    }
-  }
+
+// COMPTEUR INCREMENTE/DECREMENTE 
+// VOIR DIFFERENCE AVEC OSHI 
+
+document.forms[7].ch1.value = 0;
+
+let btnAdd = document.forms[7].b1;
+btnAdd.addEventListener('click', () => {
+	if(document.getElementById('rb1_1').checked){
+		document.forms[7].ch1.value ++;
+	}
+	else{
+		document.forms[7].ch1.value --;
+	}
+})
+document.forms[7].ch1.addEventListener('focus', () => {
+	document.forms[7].ch1.blur();})
+
+
+// BOUTON SAVE & RESET
+// VOIR DIFFERENCE AVEC OSHI
+
+document.forms[8].b1.addEventListener('click', () => {
+	document.forms[8].ch1.defaultValue = document.forms[8].ch1.value;
 })
 
-exo[8].b1.addEventListener('click', () => {
-  exo[8].ch1.defaultValue = exo[8].ch1.value;
+// PLACE LA VALEUR ET LE TEXTE DE L'OPTION SELECTIONNEE A L'INTERIEUR DES CHAMPS CORRESPONDANTS
+// VOIR DIFFERENCE AVEC OSHI
+
+document.forms[9].s1.addEventListener('click', () => {
+	var x = document.forms[9].s1;
+	var value = x.options[x.selectedIndex].value; //utilisation de selectedIndex
+	var text = x.options[x.selectedIndex].text;
+	document.forms[9].ch1.value = value;
+	document.forms[9].ch2.value = text;
 })
 
-exo[8].b2.addEventListener('click', () => {
-  exo[8].ch1.defaultValue = "Texte initial";
-  exo[8].ch1.value = "Texte initial";
-})
 
-exo[9].s1.addEventListener('change', () => {
-  exo[9].ch1.value = exo[9].s1.value;
-  exo[9].ch2.value = exo[9].s1.options[exo[9].s1.selectedIndex].text;
-})
+// PLACE "LES" VALEURS ET LES TEXTES DES OPTIONS SELECTIONNEES A L'INTERIEUR DES CHAMPS CORRESPONDANTS
+// CODE REPRIS OSHI
 
-exo[10].s1.addEventListener('change', () => {
+exo[10].s1.addEventListener('change', () => { //ce premier bloc sert à récupérer les valeurs dès que la sélection des options change, on fait un tour de boucle et on ajoute les nouvelles valeurs dans un tableau
   const selected_options = [[],[]];
-  Array.from(exo[10].s1.options).forEach(option => {
+  Array.from(exo[10].s1.options).forEach(option => { // à quoi correspond s1 ? à l'élément général auquel sont associés une série d'options
     if(option.selected) {
       selected_options[0].push(option.value);
       selected_options[1].push(option.text);
@@ -90,11 +127,14 @@ exo[10].s1.addEventListener('change', () => {
   exo[10].ch2.value = selected_options[1];
 })
 
-exo[11].gauche.addEventListener('click', () => {
-  const tab = exo[11].c1;
-  const new_tab = [];
-  let c=0;
-  for(i=1; i < tab.length;i++) {
+// PERMUTATION
+// NOTES SUR LE CODE CI-DESSOUS QUI VIENT D'OSHI : pourquoi utiliser deux types de boucles différentes? 
+
+exo[11].gauche.addEventListener('click', () => { //lorsqu'on clique sur le bouton de gauche
+  const tab = exo[11].c1; //récupération du tableau des différentes valeurs à permuter, dans leur ordre donc 
+  const new_tab = []; //création du tableau qui va être incrémenté 
+  let c=0; // création d'une variable de comptage 
+  for(i=1; i < tab.length;i++) { // pour chaque valeur dans le tableau d'origine en commençant à l'index 1 (et non 0), on ajoute à la fin du nouveau tableau les valeurs comprises dans tab
     new_tab.push(tab[i].value);
   }
   new_tab.push(tab[0].value);
@@ -118,10 +158,13 @@ exo[11].droite.addEventListener('click', () => {
   })
 })
 
-exo[12].droite.addEventListener('click', () => {
-  Array.from(exo[12].s1.options).forEach(option => {
-    if (option.selected) {
-      exo[12].s2.appendChild(option);
+
+// FAIRE BASCULER LES ITEMS SELECTIONNES ENTRE LES DEUX LISTES
+// COMMENTER/COMPRENDRE/REPERTORIER/APPROPRIER
+exo[12].droite.addEventListener('click', () => { 
+  Array.from(exo[12].s1.options).forEach(optionZest => { //POUR COMPLETER INDEX/PRATIQUE(qui fait lien avec théorique), JE PEUX NOTER CET EXEMPLE CI DANS LE VERSANT PRATIQUE POUR LE CONCEPT FOREACH, ou encore ARRAYFROM
+    if (optionZest.selected) {
+      exo[12].s2.appendChild(optionZest);
     }
   });
 })
@@ -133,6 +176,9 @@ exo[12].gauche.addEventListener('click', () => {
     }
   });
 })
+
+// CHAMP DE 5 CARACTERES QUI NE SONT ACCESSIBLES QUE SI LES CHAMPS PRECEDENTS SONT REMPLIS 
+//REPRIS D'OSHI
 
 exo[13].c02.disabled = true;
 exo[13].c03.disabled = true;
@@ -155,13 +201,20 @@ exo[13].addEventListener('keyup', () => {
   }
 })
 
+// ELEMENT QUI DISPARAIT LORSQUE L'ON COCHE LA CASE ET REAPPARAIT LORSQUE L'ON DECOCHE
+// NOTER POUR THEORIE : bien faire la distinction entre propriété et attribut
+
+
 exo[14].cb1.addEventListener('click', () => {
-  if (exo[14].cb1.checked) {
-    exo[14].ch1.style.display = "none";
-  } else {
-    exo[14].ch1.style.display = "block";
-  }
+	if(exo[14].cb1.checked){
+		exo[14].ch1.style.display = "none";
+	}
+	else{
+		exo[14].ch1.style.display = "block";
+	}
 })
+
+// CHAMP QUI AUGMENTE EN HAUTEUR ET EN LARGEUR DE 100PX A CHAQUE FOIS QUE L'ON ENTRE LE FOCUS DEDANS ET RETOURNE A SON ETAT INITIAL EN SORTANT
 
 const actual_style = exo[15].ch1.style;
 actual_style.width="170px";
@@ -174,6 +227,8 @@ exo[15].ch1.addEventListener('blur', () => {
   actual_style.width = "170px";
   actual_style.height = "16px";
 })
+
+// EXO BONUS // OSHI
 
 const CarresExo1 = Array.from(document.getElementsByClassName("1_exo_carre carre"));
 CarresExo1.forEach((carre) => {
@@ -201,6 +256,7 @@ const ExoBonusImgDroite = document.getElementById("idroite");
 const ExoBonusDivDroite = document.getElementsByClassName("droite");
 let Last_Img_Clicked;
 let dragged;
+
 Array.from(ExoBonusImgsGauche).forEach((img) => {
   img.draggable = true;
   img.addEventListener('click', () => {
