@@ -22,23 +22,26 @@ document.forms[1].ch1.addEventListener('focus', () => {
     document.forms[1].ch1.value="";
 })
 document.forms[1].ch1.addEventListener('blur', () => {
-	document.forms[1].ch1.value = form1Value;
+  if (document.forms[1].ch1.value === ''){
+    document.forms[1].ch1.value = document.forms[1].ch1.defaultValue;
+  }
 })
 
 //CHAMP DONT LA TAILLE AUGMENTE 
 
-document.forms[2].ch1.addEventListener('focus', () => {
-	document.forms[2].ch1.addEventListener('keydown', () => {
-		document.forms[2].ch1.size = 20000;
-	})
+document.forms[2].ch1.addEventListener('keydown', () => {
+  document.forms[2].ch1.size++;
 })
 
 // CHAMP QUI AFFICHE LES CARACTERES QUAND CASE COCHEE
 
 document.forms[3].cb1.addEventListener('click', () => {
-	var x = document.forms[3].ch1;
-	if (x.type === "password"){x.type = "text";}
-	else{x.type = "password";}
+	const x = document.forms[3].ch1;
+	if (x.type === "password"){
+    x.type = "text";
+  } else { 
+    x.type = "password";
+  }
 })
 
 // CHAMP QUI AFFICHE CARACT QUAND SOURIS MAINTENUE ET LES MASQUE SINON
@@ -48,7 +51,8 @@ document.forms[4].ch1.addEventListener('mousedown', () => {
 })
 
 document.forms[4].ch1.addEventListener('mouseup', () => {
-	document.forms[4].ch1.type="password"});
+  document.forms[4].ch1.type = "password";
+});
 
 // CHAMP QUI JETTE LE FOCUS QUAND ON ESSAYE DE LUI DONNER
 
@@ -61,10 +65,9 @@ document.forms[5].ch1.addEventListener('focus', () => {
 exo[6].cb1.addEventListener('click', () => { //la subtilité de l'exo tient en ce qu'il faut se projeter dans l'état qui précède le click car c'est lui qui va déterminer le contenu de la condition. 
   if(exo[6].cb1.checked) {
     exo[6].ch1.focus();
-    exo[6].ch1.value = "";
+    exo[6].ch1.value = "0";
   } else {
-    exo[6].ch1.blur();
-    exo[6].ch1.value = 0; // remise à zero
+    exo[6].ch1.value = ""; // remise à zero
   }
 })
 
@@ -80,17 +83,17 @@ exo[6].ch1.addEventListener('focus', () => {
 
 document.forms[7].ch1.value = 0;
 
-let btnAdd = document.forms[7].b1;
+const btnAdd = document.forms[7].b1;
 btnAdd.addEventListener('click', () => {
-	if(document.getElementById('rb1_1').checked){
+	if(document.getElementById('rb1_1').checked) {
 		document.forms[7].ch1.value ++;
-	}
-	else{
+	} else {
 		document.forms[7].ch1.value --;
 	}
 })
 document.forms[7].ch1.addEventListener('focus', () => {
-	document.forms[7].ch1.blur();})
+  document.forms[7].ch1.blur();
+})
 
 
 // BOUTON SAVE & RESET
@@ -103,10 +106,10 @@ document.forms[8].b1.addEventListener('click', () => {
 // PLACE LA VALEUR ET LE TEXTE DE L'OPTION SELECTIONNEE A L'INTERIEUR DES CHAMPS CORRESPONDANTS
 // VOIR DIFFERENCE AVEC OSHI
 
-document.forms[9].s1.addEventListener('click', () => {
-	var x = document.forms[9].s1;
-	var value = x.options[x.selectedIndex].value; //utilisation de selectedIndex
-	var text = x.options[x.selectedIndex].text;
+document.forms[9].s1.addEventListener('change', () => {
+	const x = document.forms[9].s1;
+	const value = x.options[x.selectedIndex].value; //utilisation de selectedIndex
+	const text = x.options[x.selectedIndex].text;
 	document.forms[9].ch1.value = value;
 	document.forms[9].ch2.value = text;
 })
@@ -123,46 +126,42 @@ exo[10].s1.addEventListener('change', () => { //ce premier bloc sert à récupé
       selected_options[1].push(option.text);
     }
   });
-  exo[10].ch1.value = selected_options[0];
-  exo[10].ch2.value = selected_options[1];
+  exo[10].ch1.value = selected_options[0].join(', ');
+  exo[10].ch2.value = selected_options[1].join(', ');
 })
 
 // PERMUTATION
 // NOTES SUR LE CODE CI-DESSOUS QUI VIENT D'OSHI : pourquoi utiliser deux types de boucles différentes? 
 
 exo[11].gauche.addEventListener('click', () => { //lorsqu'on clique sur le bouton de gauche
-  const tab = exo[11].c1; //récupération du tableau des différentes valeurs à permuter, dans leur ordre donc 
-  const new_tab = []; //création du tableau qui va être incrémenté 
-  let c=0; // création d'une variable de comptage 
-  for(i=1; i < tab.length;i++) { // pour chaque valeur dans le tableau d'origine en commençant à l'index 1 (et non 0), on ajoute à la fin du nouveau tableau les valeurs comprises dans tab
-    new_tab.push(tab[i].value);
-  }
-  new_tab.push(tab[0].value);
-  tab.forEach(element => {
-    element.value = new_tab[c];
-    c++;
-  })
+  permutte(1);
 })
 
 exo[11].droite.addEventListener('click', () => {
-  const tab = exo[11].c1;
-  const new_tab = [];
-  let c = 0;
-  new_tab.push(tab[tab.length-1].value);
-  for (i = 0; i < tab.length-1; i++) {
-    new_tab.push(tab[i].value);
-  }
-  tab.forEach(element => {
-    element.value = new_tab[c];
-    c++;
-  })
+  permutte(-1);
 })
 
+function permutte(sens) {
+  const tab = exo[11].c1;
+  let tab_tmp = [];
+  
+  if (sens === 1) {
+    tab_tmp = Array.from(tab).slice(1).map(input => input.value);
+    tab_tmp.push(tab[0].value);
+  } else {
+    tab_tmp = Array.from(tab).slice(0, tab.length - 1 ).map(input => input.value);
+    tab_tmp.unshift(tab[tab.length - 1].value);
+  }
+
+  tab.forEach((element, c) => {
+    element.value = tab_tmp[c];
+  })
+}
 
 // FAIRE BASCULER LES ITEMS SELECTIONNES ENTRE LES DEUX LISTES
 // COMMENTER/COMPRENDRE/REPERTORIER/APPROPRIER
 exo[12].droite.addEventListener('click', () => { 
-  Array.from(exo[12].s1.options).forEach(optionZest => { //POUR COMPLETER INDEX/PRATIQUE(qui fait lien avec théorique), JE PEUX NOTER CET EXEMPLE CI DANS LE VERSANT PRATIQUE POUR LE CONCEPT FOREACH, ou encore ARRAYFROM
+  Array.from(exo[12].s1.selectedOptions).forEach(optionZest => { //POUR COMPLETER INDEX/PRATIQUE(qui fait lien avec théorique), JE PEUX NOTER CET EXEMPLE CI DANS LE VERSANT PRATIQUE POUR LE CONCEPT FOREACH, ou encore ARRAYFROM
     if (optionZest.selected) {
       exo[12].s2.appendChild(optionZest);
     }
@@ -307,3 +306,4 @@ document.addEventListener("drop", function(event) {
   }
 
 }, false);
+
